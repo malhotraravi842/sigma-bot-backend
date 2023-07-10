@@ -1,7 +1,7 @@
 require("dotenv").config();
 const vision = require("@google-cloud/vision");
 
-exports.postOcr = async (req, res, next) => {
+exports.postImageOcr = async (req, res, next) => {
   let { base64Url } = req.body;
   if (!base64Url) {
     res

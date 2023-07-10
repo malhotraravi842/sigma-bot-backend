@@ -1,7 +1,10 @@
 const express = require("express");
-const ocrControllers = require("../controllers/ocr");
+const imageOcrControllers = require("../controllers/imageOcr");
+const documentOcrControllers = require("../controllers/documentOcr");
 const router = express.Router();
 
-router.post("/ocr", ocrControllers.postOcr);
+router.post("/ocr/image", imageOcrControllers.postImageOcr);
+
+router.post("/ocr/document", documentOcrControllers.postDocumentOcr);
 
 module.exports = router;
