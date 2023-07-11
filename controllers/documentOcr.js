@@ -4,6 +4,7 @@ const { ImageAnnotatorClient } = require("@google-cloud/vision");
 const processFile = require("../middleware/documentOcr");
 const uuid = require("uuid");
 const path = require("path");
+const { formatTextDetectionFromDocumentApiRes } = require("../utils");
 
 exports.postDocumentOcr = async (req, res, next) => {
   try {
@@ -64,7 +65,7 @@ exports.postDocumentOcr = async (req, res, next) => {
 
       res.status(200).send({
         message: "Ocr Performed successfully.",
-        data: jsonContent?.responses[0]?.fullTextAnnotation,
+        data: formatTextDetectionFromDocumentApiRes(jsonContent),
       });
     });
 
