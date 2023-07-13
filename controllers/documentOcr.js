@@ -56,12 +56,14 @@ exports.postDocumentOcr = async (req, res, next) => {
       const [operation] = await client.asyncBatchAnnotateFiles(request);
       const [filesResponse] = await operation.promise();
 
-      const contents = await storage
+      const [files] = await storage
         .bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME)
-        .file(`${generatedUuid}-output-1-to-1.json`)
-        .download();
+        .getFiles({
+          prefix: `${generatedUuid}-output-`,
+        });
 
-      const jsonContent = JSON.parse(contents);
+      const contents = await files[0].download();
+      let jsonContent = JSON.parse(contents);
 
       res.status(200).send({
         message: "Ocr Performed successfully.",
