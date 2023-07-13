@@ -3,40 +3,41 @@ exports.getFileType = (base64Encoded) => {
 };
 
 exports.formatTextDetectionFromDocumentApiRes = (json) => {
-  let data = json.responses[0]?.fullTextAnnotation;
-  let pages = data?.pages;
-  let parsedText = data?.text;
+  let pagesData = [];
 
-  let newArr = pages.map((data) => {
-    let height = data?.height;
-    let width = data?.width;
-    let blocks = data?.blocks;
+  json.responses.forEach((res, pageNum) => {
+    let data = res.fullTextAnnotation;
+    let pages = data?.pages;
+    let parsedText = data?.text;
+
     let newWordsArr = [];
-    blocks.forEach((block) => {
-      let paragraphs = block?.paragraphs;
-      paragraphs.forEach((para) => {
-        let words = para?.words;
-        words.map((word) => {
-          let normalizedVertices = word?.boundingBox?.normalizedVertices;
-          let symbols = word?.symbols;
+    pages.forEach((data) => {
+      let blocks = data?.blocks;
+      blocks.forEach((block) => {
+        let paragraphs = block?.paragraphs;
+        paragraphs.forEach((para) => {
+          let words = para?.words;
+          words.forEach((word) => {
+            let normalizedVertices = word?.boundingBox?.normalizedVertices;
+            let symbols = word?.symbols;
 
-          let wordString = "";
-          symbols.map((symbol) => {
-            wordString += symbol?.text;
+            let wordString = "";
+            symbols.forEach((symbol) => {
+              wordString += symbol?.text;
+            });
+
+            newWordsArr.push({ normalizedVertices, word: wordString });
           });
-
-          newWordsArr.push({ normalizedVertices, word: wordString });
-          return null;
         });
-
-        return null;
       });
-
-      return null;
     });
 
-    return { height, width, words: newWordsArr };
+    pagesData.push({
+      text: parsedText,
+      pageNumber: pageNum + 1,
+      words: newWordsArr,
+    });
   });
 
-  return { text: parsedText, pages: newArr };
+  return pagesData;
 };
