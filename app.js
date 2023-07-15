@@ -14,4 +14,8 @@ app.use(express.json({ limit: process.env.FILE_UPLOAD_LIMIT }));
 
 app.use(ocrRoutes);
 
+app.use("/", (req, res, next) => {
+  res.send("<h1>Hello, Backend is live</h1>");
+});
+
 app.listen(process.env.PORT);
