@@ -6,6 +6,8 @@ const uuid = require("uuid");
 const path = require("path");
 const { formatTextDetectionFromDocumentApiRes } = require("../utils");
 
+const keyFilePath = path.join(__dirname, "..", "key.json");
+
 exports.postDocumentOcr = async (req, res, next) => {
   try {
     const bucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
@@ -80,7 +82,7 @@ exports.postDocumentOcr = async (req, res, next) => {
 };
 
 const client = new ImageAnnotatorClient({
-  keyFilename: "./key.json",
+  keyFilename: keyFilePath,
 });
 
-const storage = new Storage({ keyFilename: "./key.json" });
+const storage = new Storage({ keyFilename: keyFilePath });

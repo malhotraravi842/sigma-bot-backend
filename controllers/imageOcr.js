@@ -1,5 +1,8 @@
 require("dotenv").config();
 const vision = require("@google-cloud/vision");
+const path = require("path");
+
+const keyFilePath = path.join(__dirname, "..", "key.json");
 
 exports.postImageOcr = async (req, res, next) => {
   let { base64Url } = req.body;
@@ -28,5 +31,5 @@ exports.postImageOcr = async (req, res, next) => {
 
 // Creates a client
 const client = new vision.ImageAnnotatorClient({
-  keyFilename: "./key.json",
+  keyFilename: keyFilePath,
 });
