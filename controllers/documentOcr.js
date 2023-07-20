@@ -36,12 +36,12 @@ exports.postDocumentOcr = async (req, res, next) => {
       const inputConfig = {
         mimeType: "application/pdf",
         gcsSource: {
-          uri: `gs://sigma-bot/${newFileName}`,
+          uri: `gs://${process.env.GOOGLE_CLOUD_BUCKET_NAME}/${newFileName}`,
         },
       };
       const outputConfig = {
         gcsDestination: {
-          uri: `gs://sigma-bot/${generatedUuid}-`,
+          uri: `gs://${process.env.GOOGLE_CLOUD_BUCKET_NAME}/${generatedUuid}-`,
         },
       };
       const features = [{ type: "DOCUMENT_TEXT_DETECTION" }];
