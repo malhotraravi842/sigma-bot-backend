@@ -1,8 +1,8 @@
 require("dotenv").config();
 const vision = require("@google-cloud/vision");
 const path = require("path");
-
 const keyFilePath = path.join(__dirname, "..", "key.json");
+const redactor = require("../utils/piidata");
 
 exports.postImageOcr = async (req, res, next) => {
   let { base64Url } = req.body;
@@ -22,9 +22,10 @@ exports.postImageOcr = async (req, res, next) => {
   try {
     const [result] = await client.textDetection(data);
     const detections = result.textAnnotations;
-    res.status(200).json({ data: detections });
+    let parsedText = detections[0]?.description;
+    let maskedText = await redactor.redactAsync(parsedText);
+    res.status(200).json({ data: detections, maskedText });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ status: "failed" });
   }
 };

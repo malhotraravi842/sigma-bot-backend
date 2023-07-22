@@ -5,8 +5,8 @@ const processFile = require("../middleware/documentOcr");
 const uuid = require("uuid");
 const path = require("path");
 const { formatTextDetectionFromDocumentApiRes } = require("../utils");
-
 const keyFilePath = path.join(__dirname, "..", "key.json");
+const redactor = require("../utils/piidata");
 
 exports.postDocumentOcr = async (req, res, next) => {
   try {
@@ -66,10 +66,17 @@ exports.postDocumentOcr = async (req, res, next) => {
 
       const contents = await files[0].download();
       let jsonContent = JSON.parse(contents);
+      let parsedData = formatTextDetectionFromDocumentApiRes(jsonContent);
+      let text = "";
+      parsedData.forEach((pages) => {
+        text += pages.text + "\n";
+      });
+      let maskedText = await redactor.redactAsync(text);
 
       res.status(200).send({
         message: "Ocr Performed successfully.",
-        data: formatTextDetectionFromDocumentApiRes(jsonContent),
+        data: parsedData,
+        maskedText,
       });
     });
 
